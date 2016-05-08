@@ -19,7 +19,6 @@ public class ConvertersConfiguration {
 
     @Lazy
     @Bean(name = "converter.json")
-//    @Scope(value = "prototype")
     public Converter converter(Config config) {
         return jsonSerializer::toJson;
     }

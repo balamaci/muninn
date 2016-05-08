@@ -53,7 +53,7 @@ public class Notifications implements ApplicationContextAware {
 
         alertingGateway.alert(rule, eventGroupList);
 
-        registerNewSentAlert(rule, eventGroupList, sentAlertsList);
+        registerNewSentAlerts(rule, eventGroupList, sentAlertsList);
     }
 
     private List<SentAlerts> getPreviousSentAlerts(BaseRule rule) {
@@ -72,7 +72,7 @@ public class Notifications implements ApplicationContextAware {
         return Collections.emptyList();
     }
 
-    private void registerNewSentAlert(BaseRule rule, List<EventGroup> eventGroupList,
+    private void registerNewSentAlerts(BaseRule rule, List<EventGroup> eventGroupList,
                                       List<SentAlerts> previousSentAlertsList) {
         if(rule.getRealertFrequency() != null) {
             List<SentAlerts> sentAlerts = new ArrayList<>(previousSentAlertsList);
@@ -88,7 +88,7 @@ public class Notifications implements ApplicationContextAware {
     }
 
     /**
-     *
+     * Filters the old SentAlerts for alerts that are older than (they expired)
      * @param realertFrequency
      * @param alertedEvents
      * @return
@@ -144,7 +144,7 @@ public class Notifications implements ApplicationContextAware {
         return alertIds;
     }
 
-    public Storage getStorage(BaseRule rule) {
+    private Storage getStorage(BaseRule rule) {
         String storageBeanName = rule.getConfig().getString("storage");
         return (Storage) applicationContext.getBean("storage." + storageBeanName, rule.getConfig());
     }

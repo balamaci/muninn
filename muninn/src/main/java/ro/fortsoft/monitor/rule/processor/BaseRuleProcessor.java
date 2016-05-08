@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
+ * Base class for extending and creating RuleProcessors
+ *
  * @author sbalamaci
  */
 public abstract class BaseRuleProcessor implements RuleProcessor {
@@ -63,13 +65,17 @@ public abstract class BaseRuleProcessor implements RuleProcessor {
     }
 
     /**
-     * Function
-     * @return
+     * Function that handles the processing of the JSON response resulted from the query in ElasticSearch
+     * into a list of Events
+     * @return Function
      */
     protected abstract Function<JsonObject, EventsHolder> processResponseFunction();
 
     /**
      * Function to modify the produced list of events before passing it for notifications
+     *
+     * You can filter the events that do not match a certain condition
+     *
      * @return Function
      */
     protected Function<EventsHolder, EventsHolder> processEventsFunction() {
@@ -77,6 +83,12 @@ public abstract class BaseRuleProcessor implements RuleProcessor {
     }
 
 
+    /**
+     * Returns the query string that will be executed in ElasticSearch
+     * Loads the specified template
+     * @param executionContext
+     * @return
+     */
     public String prepareQueryString(ExecutionContext executionContext) {
         String template = rule.getSearchTemplate();
 

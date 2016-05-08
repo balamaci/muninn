@@ -3,7 +3,7 @@ package ro.fortsoft.monitor.event;
 import java.util.List;
 
 /**
- * @author Serban Balamaci
+ * @author sbalamaci
  */
 public class EventsHolder {
 

@@ -18,7 +18,9 @@ import ro.fortsoft.monitor.configuration.rule.RulesSchedulerConfiguration;
  */
 public class Muninn {
 
-    public static final Config config = ConfigFactory.load("muninn.conf");
+    public static final Config config = ConfigFactory.load("muninn.conf")
+            .withFallback(ConfigFactory.load("muninn-default.conf"));
+
     public static final Config searchTypesConfig = ConfigFactory.load("search.conf");
 
     public void start() {

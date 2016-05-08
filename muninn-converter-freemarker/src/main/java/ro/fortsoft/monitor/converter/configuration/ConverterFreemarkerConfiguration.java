@@ -6,6 +6,8 @@ import freemarker.template.MalformedTemplateNameException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -27,6 +29,8 @@ public class ConverterFreemarkerConfiguration implements ApplicationContextAware
 
     private ApplicationContext applicationContext;
 
+    private static final Logger log = LoggerFactory.getLogger(ConverterFreemarkerConfiguration.class);
+
     @Lazy
     @Bean(name = "converter.freemarker")
     @Scope(value = "prototype")
@@ -45,7 +49,8 @@ public class ConverterFreemarkerConfiguration implements ApplicationContextAware
                 template.process(templateModel, output);
                 String result = output.toString();
 
-                System.out.println("result " + result);
+                log.debug("Freemarker resulted template {}", result);
+
                 return result;
             } catch (TemplateNotFoundException | TemplateException | MalformedTemplateNameException e) {
                 throw new RuntimeException(e);

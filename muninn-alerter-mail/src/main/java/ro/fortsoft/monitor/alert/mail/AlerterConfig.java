@@ -2,28 +2,33 @@ package ro.fortsoft.monitor.alert.mail;
 
 import ro.fortsoft.monitor.config.ConfigValue;
 
+import java.util.List;
+
 /**
  * @author sbalamaci
  */
 class AlerterConfig {
 
-    @ConfigValue("mail.server.host")
+    @ConfigValue("alerter.email.host")
     private String host;
 
-    @ConfigValue("mail.server.port")
+    @ConfigValue("alerter.email.port")
     private Integer port;
 
-    @ConfigValue("mail.protocol")
+    @ConfigValue("alerter.email.protocol")
     private String protocol;
 
-    @ConfigValue("mail.username")
+    @ConfigValue("alerter.email.username")
     private String username;
 
-    @ConfigValue("mail.smtp.auth")
+    @ConfigValue("alerter.email.smtp.auth")
     private String smtpAuth;
 
-    @ConfigValue("mail.password")
+    @ConfigValue("alerter.email.password")
     private String password;
+
+    @ConfigValue("alerter.email.recipients")
+    private List<String> recipients;
 
     public String getHost() {
         return host;
@@ -71,5 +76,13 @@ class AlerterConfig {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<String> getRecipients() {
+        return recipients;
+    }
+
+    public void setRecipients(List<String> recipients) {
+        this.recipients = recipients;
     }
 }
