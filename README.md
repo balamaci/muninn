@@ -111,7 +111,7 @@ Concepts
 ---------------
 
 ### Rule
-Rules are just holders for configuration data - the search template, how often to run the rule, how to alert(just log, email, http-post), etc
+Rules are just holders for configuration data - the ES query to run, how often to run the query, how to alert(just log, email, http-post), etc
 The relation with the type .
 
 ### Rule Processor      
@@ -120,38 +120,40 @@ Every Rule has a **RuleProcessor**. They handle the important work of translatin
 Should you want to create your own rule processor it's good to extend **BaseRuleProcessor** which does the following:
   - Loads the search template defined in the rule '' and merges the parameters returned by 
   
-```java
-public Map<String, String> searchParameters() {
-}
-```
-Most rules probably are dependent of a timeframe - you want to get events that happened between a ${from} and ${to}-
+    ```java
+      public Map<String, String> searchParameters() {
+      }
+     ```
+     Most rules probably are dependent of a timeframe - you want to get events that happened between a ${from} and ${to}-
 so you can just make a call to TimeframeParamsAware.searchParameters()    
   
 
   - Performs the search in ES and return a JSonObject. How this data can be manipulated and extracted can be controlled
 by returning a **Function<JsonObject, EventsHolder>** that takes as input the JsonObject parses it  
-and produces an EventsHolder.       
+and produces a list of **Events**(held in **EventsHolder**).       
     
-```java
-    protected abstract Function<JsonObject, EventsHolder> processResponseFunction();
-```
+     ```java
+      protected abstract Function<JsonObject, EventsHolder> processResponseFunction();
+     ```
 
-**Events** - hold the data that will be sent in alerts.
+    **Events** - hold the data that will be sent in alerts.
+
+  - Events can be 
 
 
 ### Alerting 
 
   - Alerters - different implementations about how 
 
-#### Realerting
-There is a .
-Events have  
+### Realerting - preventing 
+We may want to run rules frequently so as to be notified very quickly that a high number of exception occurred and react.   
+But on the other hand we  To prevent alerting for the same , f we run it's very possible to Events have  
 
 
 ### Converters 
 Take care of converting a group of **Events** to text. 
-For example if we choose to alert by email, the email content is just a text
-so we can use the **muninn-converter-freemarker** and specify a freemarker template which will .
+For example if we choose to alert by email, the email content is just a text, so we can use the 
+**muninn-converter-freemarker** and specify a Freemarker template into which we pass the **Events**.
 
 
 
