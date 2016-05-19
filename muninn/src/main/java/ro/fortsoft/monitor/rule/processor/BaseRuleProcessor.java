@@ -87,7 +87,7 @@ public abstract class BaseRuleProcessor implements RuleProcessor {
      * Returns the query string that will be executed in ElasticSearch
      * Loads the specified template
      * @param executionContext
-     * @return
+     * @return query string
      */
     public String prepareQueryString(ExecutionContext executionContext) {
         String template = rule.getSearchTemplate();

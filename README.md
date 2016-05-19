@@ -1,4 +1,7 @@
-Muninn - Java Alerting Framework for ElasticSearch
+![Muninn](https://i.imgur.com/Z0eZlLi.png?1)
+
+
+Java Alerting Framework for ElasticSearch
 =====================
 An open source (Apache License) framework in Java, to send alerts based on data stored ElasticSearch.     
 
@@ -7,7 +10,6 @@ based on the data saved in ElasticSearch.
  
 You might want to take a look at [Elastalert](https://github.com/Yelp/elastalert). However while in ElastAlert most alerting usecases are covered, 
 we needed to write some special custom rules and since we're comfortable in Java(and suck at Python), **Muninn** took flight.
-![Muninn](https://i.imgur.com/eQ98Geb.png?1)
 
 **Muninn** is not meant as a translation from python to java of Elastalert. 
 
@@ -118,40 +120,47 @@ The relation with the type .
 Every Rule has a **RuleProcessor**. They handle the important work of translating the JSON response from ES into **Events**.
 
 Should you want to create your own rule processor it's good to extend **BaseRuleProcessor** which does the following:
-  - Loads the search template defined in the rule '' and merges the parameters returned by 
+  - Loads the search template defined in the rule 'search.template.name' and injects into the template, the parameters returned by 
   
     ```java
       public Map<String, String> searchParameters() {
       }
      ```
-     Most rules probably are dependent of a timeframe - you want to get events that happened between a ${from} and ${to}-
-so you can just make a call to TimeframeParamsAware.searchParameters()    
+     
+    Most rules probably are dependent of a timeframe - you want to get events that happened between a ${from} and ${to}-
+so you can just make a call to **TimeframeParamsAware.searchParameters()**     
   
 
   - Performs the search in ES and return a JSonObject. How this data can be manipulated and extracted can be controlled
 by returning a **Function<JsonObject, EventsHolder>** that takes as input the JsonObject parses it  
 and produces a list of **Events**(held in **EventsHolder**).       
-    
+    **Events** - hold the data that will be sent in alerts.
+
      ```java
       protected abstract Function<JsonObject, EventsHolder> processResponseFunction();
      ```
 
-    **Events** - hold the data that will be sent in alerts.
-
-  - Events can be 
+  - Events can be further filtered and transformed before being sent inside Alerts
+  
+     ```java
+     protected Function<EventsHolder, EventsHolder> processEventsFunction() {
+        return Function.identity(); //identity means we leave the events unchanged
+     }
+     ```
 
 
 ### Alerting 
+  - Alerters - different implementations about how to send the alerts - simplest is **log** 
 
-  - Alerters - different implementations about how 
 
-### Realerting - preventing 
-We may want to run rules frequently so as to be notified very quickly that a high number of exception occurred and react.   
+### Realerting - preventing alerts for the same events 
+We may want to run rules frequently so as to be notified very quickly that a high number of exception occurred and react quickly.   
 But on the other hand we  To prevent alerting for the same , f we run it's very possible to Events have  
 
 
 ### Converters 
 Take care of converting a group of **Events** to text. 
+
 For example if we choose to alert by email, the email content is just a text, so we can use the 
 **muninn-converter-freemarker** and specify a Freemarker template into which we pass the **Events**.
 
