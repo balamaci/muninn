@@ -49,8 +49,10 @@ search {           -- this is the search that will be run in ElasticSearch
             """
         }
     }
-    templates {    -- usually search templates are kept in 'conf/search.conf' for reuse among processors, but you can  
-      custom:      -- just a name how we decided to call our template and it's referenced from above 'search.template.name' prop
+    templates {    -- usually search templates are kept in 'conf/search.conf' for reuse among processors, but you can
+                            specify one or override it in every rule
+      custom:      -- just a name how we decided to call our template and it's referenced from the 
+                            above 'search.template.name' prop
        """
         {
          "filter": {
@@ -75,11 +77,12 @@ search {           -- this is the search that will be run in ElasticSearch
 }
 
 alerter {
-    realert {               -- this is the way through which we control not getting too many alerts for the same issues 
-       filter_key="_id"     -- this key from the result is being used to determine if it's the same alert for which we already notified
-       frequency=15 mins,   -- 
+    realert {             -- this is the way through which we control not getting too many alerts for the same issues 
+       filter_key="_id"   -- this key from the result is being used to determine if it's the same alert for which 
+                                            we already notified
+       frequency=15 mins  -- 
     }
-    alert=[log, mail]       -- we log the events and we also alert by email
+    alert=[log, mail]     -- we log the events and we also alert by email
 }
 ````
 
@@ -99,7 +102,13 @@ alerter {
         server=smtp.gmail.com
         port=587
         protocol=tls
-        ...                
+        ...
+                        
+        converter=freemarker
+    }
+    
+    log {
+        converter=json
     }
 }
 
@@ -154,15 +163,17 @@ and produces a list of **Events**(held in **EventsHolder**).
 
 
 ### Realerting - preventing alerts for the same events 
-We may want to run rules frequently so as to be notified very quickly that a high number of exception occurred and react quickly.   
-But on the other hand we  To prevent alerting for the same , f we run it's very possible to Events have  
+We may want to run rules frequently so as to be notified very quickly that a high number of exception occurred and 
+react in time.   
+But on the other hand we don't want to receive alerts over and over for the same events every time the query is run. 
+To avoid this we have the f we run it's very possible to decide if the .   
 
 
-### Converters 
-Take care of converting a group of **Events** to text. 
+### Converters - produce the text for the Alerts
+Take care of converting a group of **Events** to text for using inside Alerts. 
 
-For example if we choose to alert by email, the email content is just a text, so we can use the 
-**muninn-converter-freemarker** and specify a Freemarker template into which we pass the **Events**.
+For example if we choose to alert by email, the email content is just a text, so we can use the **freemarker** converter
+from **muninn-converter-freemarker** and specify a Freemarker template into which we pass the **Events**.
 
 
 
